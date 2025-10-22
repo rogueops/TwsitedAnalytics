@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TradingView Trend Spotter Indicator - Advanced technical analysis tool for identifying market trends, momentum shifts, and trading opportunities with precision.">
+    <meta name="keywords" content="TradingView, Trend Spotter, Technical Analysis, Trading Indicator, Market Trends, Momentum Trading, TwistedAnalytics">
+    <meta name="author" content="Twisted Analytics">
+    <meta property="og:title" content="Trend Spotter Indicator - Twisted Analytics">
+    <meta property="og:description" content="Professional TradingView indicator for precise trend detection and market analysis">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://twistedanalytics.com">
+    <title>Trend Spotter Indicator | Twisted Analytics - TradingView Indicator</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00d4ff;
+            --secondary-color: #7c3aed;
+            --accent-color: #f59e0b;
+            --bg-dark: #0a0e27;
+            --bg-darker: #070a1f;
+            --bg-card: #131832;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --border-color: #1e293b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 50%, var(--bg-darker) 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero .tagline {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section */
+        section {
+            padding: 5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        section .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Overview */
+        .overview-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .overview-content p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Installation Steps */
+        .installation-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            background: var(--bg-card);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .step h3 {
+            display: inline-block;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            margin-left: 3.5rem;
+            line-height: 1.6;
+        }
+
+        /* Configuration Table */
+        .config-table {
+            width: 100%;
+            margin-top: 2rem;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .config-table th {
+            background: var(--bg-darker);
+            padding: 1rem;
+            text-align: left;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .config-table td {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .config-table tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--bg-darker);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        /* Chart Placeholder */
+        .chart-placeholder {
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .chart-placeholder::before {
+            content: '📊';
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Strategy Cards */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .strategy-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .strategy-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .strategy-card ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .strategy-card li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .strategy-card li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--text-secondary);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-color);
+            color: var(--text-secondary);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success-color);
+            color: var(--text-secondary);
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--bg-card);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .faq-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .faq-item p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-darker);
+            padding: 3rem 2rem 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            section h2 {
+                font-size: 2rem;
+            }
+
+            .features-grid,
+            .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Twisted Analytics</div>
+            <nav>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#configuration">Configuration</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Trend Spotter Indicator</h1>
+            <p class="subtitle">Professional TradingView Indicator for Precision Trend Detection</p>
+            <p class="tagline">Master market trends with advanced algorithms designed to identify momentum shifts, trend confirmations, and optimal entry points.</p>
+            <div class="cta-buttons">
+                <a href="#installation" class="btn btn-primary">Get Started</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview">
+        <div class="container">
+            <h2>Overview</h2>
+            <p class="section-subtitle">Advanced Technical Analysis for Modern Traders</p>
+            <div class="overview-content">
+                <p>
+                    The Trend Spotter Indicator is a sophisticated TradingView tool engineered to identify high-probability trend formations across all timeframes and asset classes. Built by Twisted Analytics, this indicator combines multiple technical analysis methodologies to deliver clear, actionable signals.
+                </p>
+                <p>
+                    Whether you're trading cryptocurrencies, stocks, forex, or commodities, the Trend Spotter adapts to market conditions with intelligent algorithms that filter noise and highlight genuine trend movements. Our proprietary signal system helps you enter trends early and ride them with confidence.
+                </p>
+                <p>
+                    Designed for both novice and professional traders, the Trend Spotter provides visual clarity through intuitive color-coded signals, trend strength indicators, and momentum confirmations—all displayed directly on your TradingView charts.
+                </p>
+            </div>
+
+            <div class="chart-placeholder">
+                <p>Trend Spotter Indicator - Chart Example</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <h2>Key Features</h2>
+            <p class="section-subtitle">Powerful Tools for Trend Identification</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Multi-Timeframe Analysis</h3>
+                    <p>Automatically analyzes trends across multiple timeframes to confirm signal strength and filter false positives. Get a comprehensive view of market structure.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dynamic Trend Strength</h3>
+                    <p>Real-time trend strength measurement helps you gauge momentum intensity and potential trend exhaustion. Know when to hold and when to fold.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Smart Alert System</h3>
+                    <p>Customizable alerts notify you instantly when trend reversals, breakouts, or momentum shifts occur. Never miss a trading opportunity again.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-Time Signals</h3>
+                    <p>Lightning-fast signal generation based on proprietary algorithms that adapt to market volatility and changing conditions in real-time.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Customizable Display</h3>
+                    <p>Full control over visual elements, colors, and signal sensitivity. Tailor the indicator to match your trading style and chart preferences.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Noise Filtering</h3>
+                    <p>Advanced filtering algorithms eliminate market noise and false signals, focusing only on high-probability trend formations and reversals.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Momentum Indicators</h3>
+                    <p>Built-in momentum oscillators provide confirmation signals and help identify overbought/oversold conditions within trending markets.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3>Support & Resistance</h3>
+                    <p>Automatically identifies key support and resistance levels based on trend structure, helping you plan entries and exits with precision.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Universal Compatibility</h3>
+                    <p>Works seamlessly across all asset classes including crypto, stocks, forex, commodities, and indices. One tool for all your trading needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation">
+        <div class="container">
+            <h2>Installation</h2>
+            <p class="section-subtitle">Get up and running in minutes</p>
+            
+            <div class="installation-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <h3>Access TradingView</h3>
+                    <p>Log in to your TradingView account. A Pro, Pro+, or Premium subscription is recommended for full functionality, though the basic version works with TradingView Free accounts.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <h3>Open Indicators Menu</h3>
+                    <p>Click on the "Indicators" button at the top of your chart, or use the keyboard shortcut "/" to quickly access the indicators search.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <h3>Search for Trend Spotter</h3>
+                    <p>In the indicators search bar, type "Trend Spotter" and look for the indicator published by Twisted Analytics. Ensure you're selecting the official version.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <h3>Add to Chart</h3>
+                    <p>Click on the Trend Spotter Indicator to add it to your chart. The indicator will load with default settings optimized for most trading scenarios.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <h3>Configure Settings</h3>
+                    <p>Click the gear icon next to the indicator name to access settings. Customize parameters based on your trading strategy, timeframe, and risk tolerance.</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">6</span>
+                    <h3>Set Up Alerts (Optional)</h3>
+                    <p>Right-click on the chart and select "Add Alert". Configure alert conditions using the Trend Spotter signals to receive notifications on trend changes.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Pro Tip:</strong> Start with default settings and observe how the indicator performs on your preferred assets and timeframes before making adjustments. This helps you understand the indicator's behavior.
+            </div>
+        </div>
+    </section>
+
+    <!-- Configuration Section -->
+    <section id="configuration">
+        <div class="container">
+            <h2>Configuration</h2>
+            <p class="section-subtitle">Customize the indicator to match your trading style</p>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Important:</strong> Always backtest any configuration changes on historical data before using them in live trading. Different settings work better for different market conditions and timeframes.
+            </div>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Core Parameters</h3>
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Default</th>
+                        <th>Range</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Trend Period</strong></td>
+                        <td>20</td>
+                        <td>5-200</td>
+                        <td>Number of bars used to calculate the primary trend. Lower values = faster signals, higher values = smoother trends.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Signal Sensitivity</strong></td>
+                        <td>Medium</td>
+                        <td>Low/Medium/High</td>
+                        <td>Controls how quickly the indicator generates signals. High sensitivity may produce more signals but also more noise.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trend Strength Threshold</strong></td>
+                        <td>60</td>
+                        <td>0-100</td>
+                        <td>Minimum strength required for a trend to be considered valid. Higher values filter weaker trends.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-Timeframe Mode</strong></td>
+                        <td>Enabled</td>
+                        <td>On/Off</td>
+                        <td>When enabled, confirms signals across higher timeframes for increased accuracy.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Show Support/Resistance</strong></td>
+                        <td>Enabled</td>
+                        <td>On/Off</td>
+                        <td>Displays key support and resistance levels based on trend structure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Momentum Filter</strong></td>
+                        <td>Enabled</td>
+                        <td>On/Off</td>
+                        <td>Filters signals based on momentum confirmation to reduce false positives.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top: 3rem; margin-bottom: 1rem; color: var(--text-primary);">Visual Settings</h3>
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bullish Color</strong></td>
+                        <td>#10b981</td>
+                        <td>Color for bullish trend signals and indicators</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bearish Color</strong></td>
+                        <td>#ef4444</td>
+                        <td>Color for bearish trend signals and indicators</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neutral Color</strong></td>
+                        <td>#6b7280</td>
+                        <td>Color for neutral/consolidation periods</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Signal Size</strong></td>
+                        <td>Medium</td>
+                        <td>Size of signal arrows and markers on the chart</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Show Labels</strong></td>
+                        <td>Enabled</td>
+                        <td>Display text labels with signal information</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <p class="section-subtitle">Understanding the technology behind the signals</p>
+
+            <div class="overview-content">
+                <p>
+                    The Trend Spotter Indicator employs a sophisticated multi-layered approach to trend detection, combining several proven technical analysis methodologies into a unified system. Here's how each component contributes to the final signal:
+                </p>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-color);">Signal Generation Process</h3>
+                
+                <div class="strategy-grid">
+                    <div class="strategy-card">
+                        <h3>1. Trend Identification</h3>
+                        <ul>
+                            <li>Analyzes price action patterns across multiple timeframes</li>
+                            <li>Calculates trend direction using proprietary moving average crossovers</li>
+                            <li>Identifies higher highs/higher lows (uptrend) or lower highs/lower lows (downtrend)</li>
+                            <li>Filters out sideways consolidation periods</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h3>2. Momentum Confirmation</h3>
+                        <ul>
+                            <li>Validates trend strength using momentum oscillators</li>
+                            <li>Measures rate of change to confirm trend acceleration</li>
+                            <li>Identifies divergences that may signal trend weakening</li>
+                            <li>Ensures signals align with prevailing momentum</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h3>3. Volatility Analysis</h3>
+                        <ul>
+                            <li>Adapts to changing market volatility conditions</li>
+                            <li>Adjusts signal thresholds based on ATR (Average True Range)</li>
+                            <li>Filters low-volatility false breakouts</li>
+                            <li>Optimizes for both ranging and trending markets</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h3>4. Signal Validation</h3>
+                        <ul>
+                            <li>Cross-references multiple technical indicators</li>
+                            <li>Confirms signals across higher timeframes</li>
+                            <li>Applies statistical filters to reduce noise</li>
+                            <li>Generates final buy/sell/neutral signals</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="alert alert-success" style="margin-top: 2rem;">
+                    <strong>✅ Reliability:</strong> The multi-factor approach significantly reduces false signals by requiring confirmation from multiple independent analysis methods before generating a trading signal.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trading Strategies Section -->
+    <section id="strategies">
+        <div class="container">
+            <h2>Trading Strategies</h2>
+            <p class="section-subtitle">Proven approaches to maximize the indicator's effectiveness</p>
+
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <h3>Trend Following Strategy</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Ride the trend from early entry to exhaustion</p>
+                    <ul>
+                        <li>Enter on initial trend signal confirmation</li>
+                        <li>Add to position on pullbacks within the trend</li>
+                        <li>Use trend strength indicator to gauge position size</li>
+                        <li>Exit when trend reversal signal appears</li>
+                        <li>Best for: Medium to long-term traders</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <h3>Breakout Strategy</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Capitalize on strong momentum breakouts</p>
+                    <ul>
+                        <li>Wait for consolidation period identification</li>
+                        <li>Enter when trend signal breaks consolidation range</li>
+                        <li>Confirm with volume and momentum indicators</li>
+                        <li>Set stop-loss below/above consolidation zone</li>
+                        <li>Best for: Swing traders and day traders</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <h3>Reversal Strategy</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Catch trend changes at optimal points</p>
+                    <ul>
+                        <li>Identify trend exhaustion signals</li>
+                        <li>Wait for momentum divergence confirmation</li>
+                        <li>Enter on first reversal signal in opposite direction</li>
+                        <li>Use tight stop-loss for risk management</li>
+                        <li>Best for: Experienced contrarian traders</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <h3>Scalping Strategy</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Quick trades on short-term trend moves</p>
+                    <ul>
+                        <li>Use 1-15 minute timeframes</li>
+                        <li>Set high signal sensitivity for faster entries</li>
+                        <li>Target small moves aligned with larger timeframe trend</li>
+                        <li>Quick exits on signal reversal or target hit</li>
+                        <li>Best for: Active day traders with tight spreads</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 2rem;">
+                <strong>💡 Strategy Tip:</strong> Combine the Trend Spotter with proper risk management, including position sizing, stop-losses, and profit targets. No indicator guarantees profits—always trade with a plan and risk only what you can afford to lose.
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Practices Section -->
+    <section id="best-practices">
+        <div class="container">
+            <h2>Best Practices</h2>
+            <p class="section-subtitle">Maximize your success with the Trend Spotter</p>
+
+            <div class="faq-item">
+                <h3>📊 Choose the Right Timeframe</h3>
+                <p>The Trend Spotter works across all timeframes, but different timeframes suit different trading styles. Day traders should focus on 5-15 minute charts, swing traders on 1-4 hour charts, and position traders on daily or weekly charts. Always confirm signals with higher timeframe trends.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>🎯 Combine with Other Indicators</h3>
+                <p>While powerful on its own, the Trend Spotter becomes even more effective when combined with volume indicators, RSI, or support/resistance levels. Use these complementary tools to validate signals and improve your entry/exit timing.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>💰 Implement Proper Risk Management</h3>
+                <p>Never risk more than 1-2% of your trading capital on a single trade. Use stop-losses based on technical levels, not arbitrary percentages. The Trend Spotter identifies opportunities—your risk management preserves capital.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>📈 Backtest Before Trading Live</h3>
+                <p>Use TradingView's replay feature to test the Trend Spotter on historical data. Evaluate its performance with different settings on your preferred assets. Understanding how the indicator behaved in past market conditions builds confidence.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>🔔 Use Alerts Wisely</h3>
+                <p>Set up alerts for trend changes and momentum shifts, but don't rely solely on automated signals. Review each alert in context of broader market conditions, news, and your trading plan before executing trades.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>📝 Keep a Trading Journal</h3>
+                <p>Document your trades based on Trend Spotter signals. Record entry/exit points, reasoning, outcomes, and lessons learned. This helps you refine your strategy and optimize indicator settings over time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <p class="section-subtitle">Common questions about the Trend Spotter Indicator</p>
+
+            <div class="faq-item">
+                <h3>What timeframes work best with the Trend Spotter?</h3>
+                <p>The Trend Spotter is optimized for all timeframes from 1-minute to monthly charts. However, we recommend 15-minute or higher timeframes for most traders to reduce noise. The multi-timeframe analysis feature works best when your chart timeframe has at least 2-3 higher timeframes available for confirmation.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Does this indicator repaint?</h3>
+                <p>No. The Trend Spotter uses a strict no-repaint design philosophy. Once a signal appears, it remains fixed and does not change based on future price action. This ensures you can trust historical backtesting results and signal integrity.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I use this for cryptocurrency trading?</h3>
+                <p>Absolutely! The Trend Spotter performs excellently on cryptocurrency markets. It's designed to handle the high volatility of crypto while filtering out the excessive noise common in these markets. Many users report strong performance on BTC, ETH, and major altcoins.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How do I know when a trend is ending?</h3>
+                <p>The indicator provides several clues: (1) Trend strength drops below the threshold, (2) Opposite direction signals appear, (3) Momentum divergence is detected, (4) The trend color changes to neutral. Don't wait for all confirmations—one or two are usually sufficient to consider reducing or closing positions.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What's the difference between sensitivity settings?</h3>
+                <p>Low sensitivity generates fewer signals but with higher accuracy—ideal for position traders. Medium sensitivity (default) balances signal frequency with quality—suitable for swing traders. High sensitivity produces more signals, including smaller trend moves—preferred by day traders and scalpers.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Do I need a paid TradingView account?</h3>
+                <p>The Trend Spotter works with all TradingView account types, including free accounts. However, paid accounts (Pro or higher) unlock additional features like multiple charts, more indicators per chart, and custom timeframes, which enhance the indicator's effectiveness.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I get alerts on my phone?</h3>
+                <p>Yes! Install the TradingView mobile app and enable push notifications. When you set up alerts using the Trend Spotter on desktop, you'll receive instant notifications on your mobile device. This ensures you never miss critical trend changes even when away from your computer.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support">
+        <div class="container">
+            <h2>Support & Resources</h2>
+            <p class="section-subtitle">Get help and stay updated</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>Documentation</h3>
+                    <p>Access comprehensive guides, video tutorials, and detailed parameter explanations to master every aspect of the Trend Spotter Indicator.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Community Forum</h3>
+                    <p>Join our active community of traders sharing strategies, settings, and insights. Learn from experienced users and contribute your own discoveries.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📧</div>
+                    <h3>Email Support</h3>
+                    <p>Get direct assistance from our team. We typically respond to support inquiries within 24 hours on business days.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-success" style="margin-top: 2rem;">
+                <strong>🎓 Free Training:</strong> All Trend Spotter users receive access to our exclusive video training series covering setup, configuration, and advanced trading strategies.
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <p class="section-subtitle">We'd love to hear from you</p>
+
+            <div class="overview-content" style="text-align: center;">
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                    Have questions about the Trend Spotter Indicator? Need assistance with setup or configuration? Our team is here to help.
+                </p>
+
+                <div class="features-grid" style="margin-top: 3rem;">
+                    <div class="feature-card">
+                        <h3>Email</h3>
+                        <p><a href="mailto:trading@twistedanalytics.com" style="color: var(--primary-color); text-decoration: none;">trading@twistedanalytics.com</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Website</h3>
+                        <p><a href="https://twistedanalytics.com" target="_blank" style="color: var(--primary-color); text-decoration: none;">TwistedAnalytics.com</a></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>TradingView</h3>
+                        <p style="color: var(--text-secondary);">Find us on TradingView's indicator library</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Twisted Analytics</h3>
+                <p>Data Empowered. Data Analyzed.</p>
+                <p style="margin-top: 1rem;">Professional trading tools built by traders, for traders. Leveraging cutting-edge technology to bring clarity to market complexity.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Products</h3>
+                <a href="#">Trend Spotter Indicator</a>
+                <a href="#">Custom Indicators</a>
+                <a href="#">Trading Strategies</a>
+                <a href="#">Market Analysis</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <a href="#installation">Installation Guide</a>
+                <a href="#configuration">Configuration</a>
+                <a href="#strategies">Trading Strategies</a>
+                <a href="#faq">FAQ</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <a href="mailto:trading@twistedanalytics.com">trading@twistedanalytics.com</a>
+                <a href="https://twistedanalytics.com">TwistedAnalytics.com</a>
+                <p style="margin-top: 1rem;">Support Hours:<br>Mon-Fri: 9AM-6PM EST</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Twisted Analytics. All rights reserved.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Trading involves risk. Past performance does not guarantee future results. Always conduct your own research and trade responsibly.</p>
+        </div>
+    </footer>
+</body>
+</html>
