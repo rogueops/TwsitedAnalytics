@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradingView Trend Spotter Indicator – TA ATR Model | Twisted Analytics</title>
+  <meta name="description" content="Professional Pine Script indicator for trend following with ATR-based trailing stops. Clear buy/sell signals for TradingView traders.">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #0e0e0e;
+      color: #f0f0f0;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #00c896, #009688);
+      padding: 60px 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+      color: #fff;
+    }
+    header p {
+      font-size: 1.2rem;
+      margin: 10px 0 20px;
+      color: #e0e0e0;
+    }
+    .badges {
+      margin: 20px 0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      margin: 5px;
+      background: #333;
+      color: #fff;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      border: 1px solid #555;
+    }
+    .badge.license { background: #007bff; }
+    .badge.pinescript { background: #ff6b00; }
+    .badge.tradingview { background: #2962ff; }
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      margin: 10px;
+      background: #ffa500;
+      color: #000;
+      font-weight: bold;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #ffcc33;
+    }
+    .btn.secondary {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+    .btn.secondary:hover {
+      background: #555;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      color: #00c896;
+    }
+    .features, .signals, .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .card {
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #ffa500;
+    }
+    .card h4 {
+      color: #00c896;
+      margin-bottom: 10px;
+    }
+    .config-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: #1c1c1c;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .config-table th, .config-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #333;
+    }
+    .config-table th {
+      background: #333;
+      color: #ffa500;
+      font-weight: bold;
+    }
+    .config-table tr:hover {
+      background: #2a2a2a;
+    }
+    .placeholder {
+      background: #333;
+      border: 2px dashed #555;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      color: #aaa;
+      margin: 20px 0;
+    }
+    .code-block {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      overflow-x: auto;
+    }
+    .warning {
+      background: #2c1810;
+      border-left: 4px solid #ff6b35;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 5px 5px 0;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin: 8px 0;
+    }
+    .signal-indicator {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin: 0 5px;
+    }
+    .signal-buy { background: #28a745; color: white; }
+    .signal-sell { background: #dc3545; color: white; }
+    footer {
+      background: #111;
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    footer a, a {
+      color: #00c896;
+      text-decoration: none;
+    }
+    footer a:hover, a:hover {
+      text-decoration: underline;
+    }
+    .emoji {
+      font-size: 1.2em;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <header>
+    <h1>TradingView Trend Spotter Indicator</h1>
+    <p>Professional ATR-Based Trading Signals for Pine Script v6</p>
+    <div class="badges">
+      <span class="badge license">MIT License</span>
+      <span class="badge pinescript">Pine Script v6</span>
+      <span class="badge tradingview">TradingView Platform</span>
+    </div>
+    <a href="#installation" class="btn">Get Started</a>
+    <a href="#contact" class="btn secondary">Contact Support</a>
+  </header>
+
+  <!-- About Twisted Analytics -->
+  <section>
+    <h2><span class="emoji">📈</span>About Twisted Analytics</h2>
+    <p>
+      <strong>Twisted Analytics (TA)</strong> is a FinTech company dedicated to empowering traders with advanced tools, 
+      methods, and strategies. In a world where nearly 90% of traders lose money, our mission is to change that statistic.  
+      We design <em>efficient, accurate, and practical indicators</em> that provide clarity in chaotic markets, giving every trader 
+      the chance to trade with confidence and precision.
+    </p>
+    <p>
+      Our latest innovation, the <strong>Trend Spotter Indicator (TA ATR Model)</strong>, combines Average True Range calculations 
+      with trailing stop logic to generate clear buy and sell signals, making it an essential tool for trend-following strategies.
+    </p>
+  </section>
+
+  <!-- Overview -->
+  <section>
+    <h2><span class="emoji">📊</span>Overview</h2>
+    <p>
+      The <strong>Trend Spotter Indicator</strong> (TA ATR Model) is a custom Pine Script indicator designed to help traders 
+      identify optimal entry and exit points in trending markets. This indicator combines Average True Range (ATR) calculations 
+      with trailing stop logic to generate clear buy and sell signals, making it an essential tool for trend-following strategies.
+    </p>
+    <div class="placeholder">[ Placeholder for Trend Spotter Chart Screenshot ]</div>
+  </section>
+
+  <!-- Features -->
+  <section>
+    <h2><span class="emoji">✨</span>Features</h2>
+    <div class="features">
+      <div class="card">
+        <h3>ATR-Based Trailing Stops</h3>
+        <p>
+          Dynamic stop levels that adapt to market volatility, ensuring optimal risk management across different market conditions.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Heikin Ashi Support</h3>
+        <p>
+          Optional Heikin Ashi candle data for smoother trend analysis and reduced market noise.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Visual Signal System</h3>
+        <p>
+          Clear <span class="signal-buy">BUY</span> and <span class="signal-sell">SELL</span> labels directly on your chart for instant recognition.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Bar Coloring</h3>
+        <p>
+          Color-coded bars for instant trend recognition - green for bullish signals, red for bearish signals.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Alert System</h3>
+        <p>
+          Built-in alerts for long and short signals to never miss trading opportunities.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Customizable Parameters</h3>
+        <p>
+          Adjustable sensitivity and ATR period settings to match your trading style and timeframe.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation -->
+  <section id="installation">
+    <h2><span class="emoji">🛠️</span>Installation</h2>
+    <ol>
+      <li>Open TradingView and navigate to the Pine Script editor</li>
+      <li>Copy the contents of <code>TrendSpotter.pine</code></li>
+      <li>Paste the code into a new Pine Script</li>
+      <li>Click "Add to Chart"</li>
+      <li>Configure your preferred settings</li>
+    </ol>
+    <a href="mailto:trading@twistedanalytics.com?subject=TrendSpotter%20Pine%20Script%20Request" class="btn">Request Pine Script Code</a>
+  </section>
+
+  <!-- Configuration -->
+  <section>
+    <h2><span class="emoji">⚙️</span>Configuration</h2>
+    
+    <h3>Input Parameters</h3>
+    <table class="config-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Noise Value</strong></td>
+          <td>2.0</td>
+          <td>Controls the sensitivity of the indicator. Higher values = less sensitive</td>
+        </tr>
+        <tr>
+          <td><strong>ATR Period</strong></td>
+          <td>7</td>
+          <td>Number of periods for ATR calculation</td>
+        </tr>
+        <tr>
+          <td><strong>Use Heikin Ashi</strong></td>
+          <td>false</td>
+          <td>Toggle to use Heikin Ashi candle data instead of regular OHLC</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Recommended Settings</h3>
+    <div class="config-grid">
+      <div class="card">
+        <h4>Scalping (1m-5m)</h4>
+        <p><strong>Noise Value:</strong> 1.5<br>
+        <strong>ATR Period:</strong> 5</p>
+      </div>
+      <div class="card">
+        <h4>Day Trading (15m-1h)</h4>
+        <p><strong>Noise Value:</strong> 2.0<br>
+        <strong>ATR Period:</strong> 7 (default)</p>
+      </div>
+      <div class="card">
+        <h4>Swing Trading (4h-1D)</h4>
+        <p><strong>Noise Value:</strong> 2.5<br>
+        <strong>ATR Period:</strong> 14</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section>
+    <h2><span class="emoji">🔧</span>How It Works</h2>
+    
+    <h3>Core Algorithm</h3>
+    <ol>
+      <li><strong>ATR Calculation:</strong> Measures market volatility over the specified period</li>
+      <li><strong>Trailing Stop Logic:</strong> Creates dynamic support/resistance levels</li>
+      <li><strong>Signal Generation:</strong> Triggers buy/sell signals when price crosses the trailing stop</li>
+      <li><strong>Position Tracking:</strong> Maintains trend direction state</li>
+    </ol>
+
+    <h3>Signal Logic</h3>
+    <ul>
+      <li><span class="signal-buy">Buy Signal 🟢</span>: Generated when price moves above the ATR trailing stop</li>
+      <li><span class="signal-sell">Sell Signal 🔴</span>: Generated when price moves below the ATR trailing stop</li>
+    </ul>
+
+    <div class="placeholder">[ Placeholder for Signal Logic Chart Examples ]</div>
+  </section>
+
+  <!-- Trading Strategies -->
+  <section>
+    <h2><span class="emoji">💡</span>Trading Strategy Examples</h2>
+    
+    <div class="card">
+      <h3>Trend Following Strategy</h3>
+      <div class="code-block">
+Entry: Buy signal appears + price above 20 EMA
+Exit: Sell signal appears OR stop-loss hit
+Risk Management: 1-2% risk per trade
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Scalping Strategy</h3>
+      <div class="code-block">
+Entry: Buy/Sell signal with immediate execution
+Exit: Opposite signal OR quick profit target (10-20 pips)
+Risk Management: Tight stops, high win rate focus
+      </div>
+    </div>
+  </section>
+
+  <!-- Alerts Setup -->
+  <section>
+    <h2><span class="emoji">📱</span>Alerts Setup</h2>
+    <p>The indicator includes built-in alert conditions:</p>
+    <ol>
+      <li>Go to TradingView's Alert panel</li>
+      <li>Select "TA ATR Model" as the condition</li>
+      <li>Choose between:
+        <ul>
+          <li><strong>Long Alert:</strong> Triggers on buy signals</li>
+          <li><strong>Short Alert:</strong> Triggers on sell signals</li>
+        </ul>
+      </li>
+      <li>Configure your notification preferences</li>
+    </ol>
+  </section>
+
+  <!-- Risk Disclaimer -->
+  <section>
+    <div class="warning">
+      <h2><span class="emoji">⚠️</span>Risk Disclaimer</h2>
+      <p>
+        This indicator is for educational and informational purposes only. Trading involves substantial risk and is not suitable for all investors. 
+        Past performance does not guarantee future results. Always:
+      </p>
+      <ul>
+        <li>Use proper risk management</li>
+        <li>Test strategies on demo accounts first</li>
+        <li>Never risk more than you can afford to lose</li>
+        <li>Consider market conditions and volatility</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2><span class="emoji">📞</span>Support & Contact</h2>
+    <p>For questions, Pine Script access, or technical support:</p>
+    <p>📩 Email: <a href="mailto:trading@twistedanalytics.com">trading@twistedanalytics.com</a></p>
+    <p>💬 GitHub: <a href="https://github.com/rogueops" target="_blank">@rogueops</a></p>
+    <p>📞 Discord: <a href="https://discord.gg/U6gvbG9HAs" target="_blank">Twisted Trading Hub</a></p>
+    
+    <div style="margin-top: 30px;">
+      <a href="mailto:trading@twistedanalytics.com?subject=TrendSpotter%20Support%20Request" class="btn">Get Support</a>
+      <a href="mailto:trading@twistedanalytics.com?subject=TrendSpotter%20Pine%20Script%20Request" class="btn secondary">Request Pine Script</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      © 2025 Twisted Analytics. All rights reserved. | 
+      <a href="mailto:trading@twistedanalytics.com">Contact Support</a> | 
+      <a href="https://github.com/rogueops/TwsitedAnalytics" target="_blank">GitHub Repository</a>
+    </p>
+    <p style="margin-top: 15px; font-style: italic; color: #666;">
+      <strong>Happy Trading! 📈</strong><br>
+      <em>Remember: The best indicator is proper risk management combined with market knowledge.</em>
+    </p>
+  </footer>
+</body>
+</html>
